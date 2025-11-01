@@ -1,0 +1,14 @@
+---
+const {id, icon, title, content} = Astro.props
+
+const base = import.meta.env.BASE_URL;
+---
+
+<div class="feature-card" data-title={title}>
+    <div class="feature-icon">{icon}</div>
+    <h3>{title}</h3>
+    <p>{content}</p>
+    <div class='feature-button-wrapper'>
+        <a href={`${base}/features/${id}`} class='feature-button'>See the feature</a>
+    </div>
+</div>

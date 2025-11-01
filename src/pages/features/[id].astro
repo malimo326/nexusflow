@@ -1,0 +1,35 @@
+---
+import Mainlayout from '../../Layouts/MainLayout.astro';
+import { FeatureCards } from '../../data/features.js';
+
+export async function getStaticPaths() {
+	return FeatureCards.map((f) => ({
+		params: { id: f.id }, // URL: /features/<id>
+		props: { feature: f }, // pass the feature to the page
+	}));
+}
+
+const base = import.meta.env.BASE_URL;
+const { feature } = Astro.props;
+
+const pageTitle = `${feature.title}`;
+---
+
+<Mainlayout title={pageTitle} description={feature.content}>
+	<!-- Features Section -->
+	<section class='features fade-up' id='features'>
+		<div class='features-container'>
+			<div class='section-header'>
+				<h2 class='section-title'>{feature.icon} <br /> {feature.title}</h2>
+				<p class='section-subtitle'>{feature.content}</p>
+			</div>
+			<div class='center'>
+				{feature.content_long}
+			</div>
+		</div>
+
+		<div class='feature-button-wrapper' style="max-width: 260px; margin:2rem auto">
+        	<a href={`${base}/features/`} class='feature-button'>All Features</a>
+    	</div>
+	</section>
+</Mainlayout>

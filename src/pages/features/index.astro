@@ -1,0 +1,134 @@
+---
+import Mainlayout from "../../Layouts/MainLayout.astro";
+import FeatureCard from "../../components/features/FeatureCard.astro";
+import { FeatureCards } from "../../data/features.js";
+
+const pageTitle = "Features";
+const headerTitle = "Core Systems";
+const headerSubTitle = "Advanced modules designed for maximum efficiency and seamless integration";
+
+// read initial query from URL (for hydration-less prefilling)
+const initialQ = Astro.url.searchParams.get('q') ?? '';
+---
+
+<Mainlayout title={pageTitle} description="of features">
+  <section class="features fade-up" id="features">
+    <div class="features-container">
+      <div class="section-header">
+        <h2 class="section-title">{headerTitle}</h2>
+        <p class="section-subtitle">{headerSubTitle}</p>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="features-search">
+        <label for="feature-search" class="sr-only">Search features</label>
+        <input
+          id="feature-search"
+          type="search"
+          name="q"
+          placeholder="Search features by title…"
+          value={initialQ}
+          autocomplete="off"
+        />
+        <div class="results-meta">
+          <span id="results-count">0</span> result<span id="results-plural">s</span>
+        </div>
+      </div>
+
+      <div class="features-grid" id="features-grid">
+        {FeatureCards.map((feature) => (
+          <FeatureCard {...feature} />
+        ))}
+      </div>
+
+      <p id="no-results" style="display:none;margin-top:1rem;">
+        No features match “<span id="no-results-query"></span>”.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- Tiny inline script; no framework needed -->
+  <script is:inline>
+    (function () {
+      const $input = document.getElementById('feature-search');
+      const $grid = document.getElementById('features-grid');
+      const $cards = Array.from($grid.querySelectorAll('.feature-card'));
+      const $count = document.getElementById('results-count');
+      const $plural = document.getElementById('results-plural');
+      const $empty = document.getElementById('no-results');
+      const $emptyQuery = document.getElementById('no-results-query');
+
+      const norm = (s) =>
+        (s || '')
+          .toString()
+          .normalize('NFD')
+          .replace(/\p{Diacritic}/gu, '')
+          .toLowerCase()
+          .trim();
+
+      function applyFilter(q) {
+        const nq = norm(q);
+        let shown = 0;
+
+        for (const card of $cards) {
+          const titleAttr = card.getAttribute('data-title') || '';
+          const match = norm(titleAttr).includes(nq);
+          card.style.display = match ? '' : 'none';
+          if (match) shown++;
+        }
+
+        // results meta
+        $count.textContent = String(shown);
+        $plural.style.display = shown === 1 ? 'none' : '';
+
+        // empty state
+        if (shown === 0) {
+          $emptyQuery.textContent = q;
+          $empty.style.display = '';
+        } else {
+          $empty.style.display = 'none';
+        }
+
+        // sync query to URL without reload
+        const url = new URL(location.href);
+        if (q && q.length) url.searchParams.set('q', q);
+        else url.searchParams.delete('q');
+        history.replaceState({}, '', url);
+      }
+
+      $input.addEventListener('input', () => applyFilter($input.value));
+      // initial run (supports pre-filled ?q=)
+      applyFilter($input.value);
+    })();
+  </script>
+
+  <style>
+    /* minimal styles; adjust to your design system */
+    .features-search {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      margin: 1rem 0 1.25rem;
+      flex-wrap: wrap;
+    }
+    .features-search input[type="search"] {
+      padding: 0.65rem 0.8rem;
+      border: 1px solid var(--border, #ddd);
+      border-radius: 8px;
+      min-width: 260px;
+      font: inherit;
+    }
+    .results-meta {
+      opacity: 0.75;
+      font-size: 0.95rem;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0);
+      white-space: nowrap; border: 0;
+    }
+  </style>
+</Mainlayout>
