@@ -1,9 +1,9 @@
-import { defineConfig } from "astro/config";
+import { defineConfig } from 'astro/config';
 import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
-  site: "www.nexusflow.dev",
-  base: "/nexusflow/",
+  site: 'https://nourhomsi.net',
+  base: '/nexusflow/',
   vite: {
-    plugins: [tailwindcss()],
-  },
+    plugins: [tailwindcss()]
+  }
 });
