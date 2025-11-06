@@ -64,7 +64,7 @@ const base = import.meta.env.BASE_URL;
       {
         menuItems.map((menuItem) => (
           <li>
-            <a href={`${base}${menuItem.link}`}>{menuItem.item}</a>
+            <a href={`${menuItem.link}`}>{menuItem.item}</a>
           </li>
         ))
       }
