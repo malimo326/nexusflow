@@ -1,4 +1,12 @@
+// src/data/features.js
 export const FeatureCards = [
+  {
+    id: "quantum-processing",
+    icon: "⚡",
+    title: "Quantum Processing",
+    content:
+      "Experience lightning-fast data processing with our quantum-inspired algorithms that handle complex workflows in microseconds.",
+  },
   {
     id: "quantum-processing",
     icon: "⚡",
